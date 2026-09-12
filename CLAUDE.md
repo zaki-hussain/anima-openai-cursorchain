@@ -116,8 +116,11 @@ Attendance lifecycle (to seed extra inpatients identically in both worlds):
 CLAUDE.md            ← you are here
 docs/                ← PLAN, SIM_API, ADK, HACKATHON
 server/              ← Node 22 + TS: sim client, ADK agents, scenario runner, evals, HTTP+SSE
+  src/sim/           ← client.ts (SimClient), types.ts, worlds.ts (mint worlds)   ✓ built, smoke-tested
+  scripts/smoke.ts   ← `npm run smoke`: fresh scratch world → admit → visit+test → +121 min → discharge (≈45s when the sim is healthy)
 web/                 ← Vite + React + TS dashboard (left: work board; right: two-world animation; evals strip)
 ```
+Commands (root): `npm install` · `npm run typecheck` · `npm run smoke` · `npm test` · `npm run eval`.
 - Branches: work happens on `cursor/*` branches; `main` holds docs and merged, working code only.
 - Commit small and often; each commit is one logical change with a clear message.
 - Before a sim-writing script runs, make it print which world (team name) it targets. Default to a scratch world.
@@ -132,6 +135,8 @@ web/                 ← Vite + React + TS dashboard (left: work board; right: t
 4. `annotate` from the hospital site → 403 "GP document processing required".
 5. Sending a letter requires every one of the 7 `dischargeSections` to have text; state "none recorded" explicitly rather than leaving blanks.
 6. First patient touch is ~25s: pre-warm the cohort's `view?patient=` in parallel at scenario start.
-7. The hosted sim 502s under load; treat 502/503/504 as retryable, everything else as a real error.
+7. The hosted sim 502s under load — including **multi-minute total outages** (one observed 14:20–14:27 UTC, every endpoint 502).
+   Treat 502/503/504 as retryable with a budget of minutes, not seconds (`SimClient` defaults: 10 attempts, 3s→30s capped backoff,
+   `/healthz` probe between attempts). Everything else is a real error. `/healthz` is public and returns 200 when the app + Postgres are up.
 8. Advancing the clock in one world does not advance another. Baseline and conductor worlds must be advanced in lockstep by our runner.
 9. The clock cannot go backwards and worlds cannot be reset — mint a fresh world per demo run (`teamName` with a run suffix).
