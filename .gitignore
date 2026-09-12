@@ -1,0 +1,22 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# dependencies / build
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+
+# runtime artefacts
+server/runs/*.json
+server/evals/latest.json
+server/evals/latest.md
+*.log
+
+# editors / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
