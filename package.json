@@ -1,0 +1,20 @@
+{
+  "name": "homeward",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Agentic discharge conductor for the Anima NHS-SIM neighbourhood (OpenAI x Anima hackathon 2026)",
+  "type": "module",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "smoke": "npm run smoke -w server",
+    "typecheck": "npm run typecheck -w server",
+    "test": "npm run test -w server",
+    "eval": "npm run eval -w server"
+  }
+}
